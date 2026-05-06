@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: stage-00-warmup
+
+  ai:
+    anthropic:
+      # 從環境變數讀取 API key,不要把 key 寫死在檔案裡
+      # 設定方式: export ANTHROPIC_API_KEY=sk-ant-xxx
+      api-key: ${ANTHROPIC_API_KEY}
+      chat:
+        options:
+          # 推薦的 production 模型,平衡品質與成本
+          # 學習階段也可以改用 claude-haiku-4-5 省錢
+          model: claude-sonnet-4-5
+          # 最大輸出 token,避免一次回太長
+          max-tokens: 1024
+          # 0 = 最確定 (適合 RAG/結構化輸出),1 = 最有創意 (適合創作)
+          temperature: 0.7
+
+server:
+  port: 8080
+
+# 開啟 actuator 的 health endpoint,方便確認服務狀態
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+
+logging:
+  level:
+    root: INFO
+    com.alvinlo.ailearning: DEBUG
+    # 開啟 Spring AI 的 debug log 可以看到實際送給 Claude 的 prompt
+    # 學習階段建議開啟,production 記得關掉
+    org.springframework.ai.chat.client.advisor: DEBUG

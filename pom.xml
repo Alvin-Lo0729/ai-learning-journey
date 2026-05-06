@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--
+        ====================================================================
+         AI Learning Journey - Multi-module Parent POM
+        ====================================================================
+         作為 parent pom 統一管理:
+         - Spring Boot / Spring AI 版本
+         - 共用 dependencies (Lombok、測試框架等)
+         - Maven plugin 版本
+         - Java 版本
+
+         每個 stage-XX 模組繼承此 pom,只需要寫自己特有的 dependencies。
+        ====================================================================
+    -->
+
+    <groupId>com.alvinlo.ailearning</groupId>
+    <artifactId>ai-learning-journey</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>AI Learning Journey</name>
+    <description>從零學習 AI 應用開發的多模組專案</description>
+
+    <!-- 繼承 Spring Boot parent,取得依賴版本管理與 plugin 設定 -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.6</version>
+        <relativePath/>
+    </parent>
+
+    <!-- 子模組列表,新增階段時加在這裡 -->
+    <modules>
+        <module>common</module>
+        <module>stage-00-warmup</module>
+        <!-- 後續階段加在下面:
+        <module>stage-01-prompt-engineering</module>
+        <module>stage-02-rag-basics</module>
+        <module>stage-03-tool-use</module>
+        <module>stage-04-context-engineering</module>
+        <module>stage-05-agent-loop</module>
+        <module>stage-06-harness-engineering</module>
+        -->
+    </modules>
+
+    <properties>
+        <!--
+            Java 版本:25 LTS (2025/9 釋出)
+            Spring Boot 3.5.5+ 已正式 Java 25 ready
+            重點功能:Compact Object Headers (heap 用量 -22%)、
+                    pattern matching 增強、Module Import Declarations
+        -->
+        <java.version>25</java.version>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
+        <maven.compiler.release>25</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- Spring AI 1.1.x 系列 (GA, 2025/11 釋出) -->
+        <spring-ai.version>1.1.5</spring-ai.version>
+
+        <!--
+            常用工具版本
+            Lombok 1.18.42+ 才支援 Java 25 編譯,務必使用此版本以上
+            (舊版 1.18.34 在 Java 25 會編譯失敗)
+        -->
+        <lombok.version>1.18.42</lombok.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
+    </properties>
+
+    <!--
+        Spring AI BOM:管理所有 spring-ai-* 模組的版本一致性
+        子模組引入 spring-ai-starter-* 時不需要寫版本號
+    -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.ai</groupId>
+                <artifactId>spring-ai-bom</artifactId>
+                <version>${spring-ai.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!--
+        所有子模組共用的 dependencies (不管哪個階段都會用到)
+        - Lombok: 減少 boilerplate
+        - validation: 用於 DTO 驗證
+        - actuator: 健康檢查、指標
+        - 測試: JUnit + AssertJ + Mockito (Spring Boot 預設)
+    -->
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- 測試 dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <configuration>
+                        <excludes>
+                            <exclude>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                            </exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${lombok.version}</version>
+                            </path>
+                        </annotationProcessorPaths>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <!--
+        Spring AI 1.1 GA 已上 Maven Central,不需要 milestone repository
+        若未來想試用 2.0 milestone 版本,再加 spring-milestones
+    -->
+
+</project>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--
+        ====================================================================
+         common 模組
+        ====================================================================
+         放共用的 utility / 設定 / DTO base class,
+         讓每個階段不用重寫相同的東西。
+
+         注意: 這個模組刻意 *不* 引入 spring-boot-starter-web,
+         因為它是 library 模組,不是要獨立啟動的 application。
+        ====================================================================
+    -->
+
+    <parent>
+        <groupId>com.alvinlo.ailearning</groupId>
+        <artifactId>ai-learning-journey</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>common</artifactId>
+    <name>common</name>
+    <description>共用 utility 與基礎類別</description>
+
+    <dependencies>
+        <!-- 提供 @Component / @Configuration 等註解 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+    </dependencies>
+
+    <!--
+        common 是 library 不是 application,
+        關掉 spring-boot-maven-plugin 的 repackage 動作,
+        否則會打包成 fat jar 導致其他模組無法引用
+    -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

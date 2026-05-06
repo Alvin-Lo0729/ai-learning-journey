@@ -1,0 +1,46 @@
+### 階段 0 - HTTP 測試集
+### 在 IntelliJ IDEA 中可以直接點旁邊的綠色三角形執行
+### 也可以用 VS Code + REST Client 套件執行
+
+### 1. 健康檢查
+GET http://localhost:8080/actuator/health
+
+### 2. 同步 chat - 簡單問候
+POST http://localhost:8080/api/chat
+Content-Type: application/json
+
+{
+  "message": "你好,請用一句話介紹自己"
+}
+
+### 3. 同步 chat - 觀察 token 用量
+POST http://localhost:8080/api/chat
+Content-Type: application/json
+
+{
+  "message": "用三個 bullet point 解釋什麼是 RAG"
+}
+
+### 4. 同步 chat - 故意送長一點的內容,觀察 input token 變化
+POST http://localhost:8080/api/chat
+Content-Type: application/json
+
+{
+  "message": "我是一個 Java/Spring 後端工程師,在電商平台工作。請用我熟悉的後端概念,用 200 字以內解釋什麼是 LLM 的 token,以及為什麼要計費。"
+}
+
+### 5. 串流 chat - 看 Claude 邊產生邊回傳
+POST http://localhost:8080/api/chat/stream
+Content-Type: application/json
+
+{
+  "message": "從 1 數到 5,每個數字都要附一個程式設計相關的有趣小知識"
+}
+
+### 6. 驗證錯誤 - 空 message,應該回 400
+POST http://localhost:8080/api/chat
+Content-Type: application/json
+
+{
+  "message": ""
+}
