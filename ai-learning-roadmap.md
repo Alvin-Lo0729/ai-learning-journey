@@ -361,11 +361,30 @@
 
 > 開始時請填寫,並隨進度更新
 
-- 開始日期:____________
-- 目前階段:____________
-- 上次更新:____________
-- 卡住的點:____________
-- 下次想討論:____________
+- 開始日期:2026-05-06
+- 目前階段:階段 0 已完成 ✅,下一步進入階段 1(Prompt Engineering)
+- 上次更新:2026-05-06
+- 卡住的點:(無)階段 0 過程中卡在 `ANTHROPIC_API_KEY` 環境變數沒寫進 `~/.zshrc`,造成 Spring Boot 401 invalid x-api-key,已解決
+- 下次想討論:從階段 1 開始 — 商品評論分析 API,從「故意寫爛 prompt」逐步改進到結構化輸出
+
+---
+
+### 階段 0 完成記錄(2026-05-06)
+
+**產出**
+- Spring Boot 3.5.6 + Spring AI 1.1.5 + Anthropic Claude 串接成功
+- `/api/chat`(同步)、`/api/chat/stream`(SSE)兩個端點皆驗證通過
+
+**關鍵觀察**
+- Token:中文 1 字 ≈ 1~2 tokens、英文約 4 字元 / 1 token
+- API 計費分 **input / output 兩份**,output 通常約 5× 貴於 input(Sonnet:$3 / $15 per 1M)
+- Streaming 的價值在 **UX(降低使用者等待焦慮)**,不是縮短總時間;結構化輸出 / RAG 場景反而不適合用 streaming(要等完整 JSON 才能 parse)
+- Postman 看不到 SSE 效果是因為它會 buffer,要用 `requests.http` 或 `curl -N`
+
+**踩到的坑**
+- `export ANTHROPIC_API_KEY=...` 只對當前 shell session 有效,要寫進 `~/.zshrc` 才永久
+- IDE 啟動可能不繼承 shell 環境變數,從終端機跑 `mvn spring-boot:run -pl stage-00-warmup` 最穩
+- Parent pom 不能直接 `mvn spring-boot:run`,要加 `-pl stage-00-warmup` 指定模組
 
 ---
 

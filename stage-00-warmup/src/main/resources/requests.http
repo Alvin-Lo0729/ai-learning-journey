@@ -10,7 +10,7 @@ POST http://localhost:8080/api/chat
 Content-Type: application/json
 
 {
-  "message": "你好,請用一句話介紹自己"
+  "message": "你好"
 }
 
 ### 3. 同步 chat - 觀察 token 用量

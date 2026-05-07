@@ -11,7 +11,7 @@ spring:
         options:
           # 推薦的 production 模型,平衡品質與成本
           # 學習階段也可以改用 claude-haiku-4-5 省錢
-          model: claude-sonnet-4-5
+          model: claude-sonnet-4-6
           # 最大輸出 token,避免一次回太長
           max-tokens: 1024
           # 0 = 最確定 (適合 RAG/結構化輸出),1 = 最有創意 (適合創作)
